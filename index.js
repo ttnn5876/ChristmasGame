@@ -26,7 +26,6 @@ const init_draft = () => {
             draft[shuffledNames[index]] = shuffledNames[index + 1]
         }
     })
-    console.log(draft)
 }
 
 app.get('/:name', (req, res) => {
