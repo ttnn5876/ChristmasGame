@@ -1,46 +1,61 @@
 
 const express = require('express')
 
-const players = ['Inay', 'Tal', 'Litay', 'Artur', 'Gil', 'Bianca', 'Noe', 'Dean']
-const draft = {}
+const generateRandomUid = () => {
+    return Math.random().toString(36).substring(2, 8);
+}
 
+const shuffleArray = (array) => {
+    for (var i = array.length -1; i > 0; i--) {
+
+        var j = Math.floor(Math.random() * (i + 1))
+        var temp = array[i]
+        array[i] = array[j]
+        array[j] = temp
+    }
+    return array
+}
+
+const data = [
+    { name: 'Inay', color: '#FF6B6B', uid: generateRandomUid() },
+    { name: 'Tal', color: '#6BFF6B', uid: generateRandomUid() },
+    { name: 'Litay', color: '#6B6BFF', uid: generateRandomUid() },
+    { name: 'Artur', color: '#6BFFD4', uid: generateRandomUid() },
+    { name: 'Gil', color: '#FF6BCD', uid: generateRandomUid() },
+    { name: 'Bianca', color: '#FFD46B', uid: generateRandomUid() },
+    { name: 'Noe', color: '#6B96FF', uid: generateRandomUid() },
+    { name: 'Dean', color: '#D46BFF', uid: generateRandomUid() }
+]; 
+
+const getPlayerByUid = (uid) => {
+    return data.find(player => player.uid === uid)
+}
+
+var draft = []
 const app = express()
 const port = process.env.PORT || 3000;
 
 const init_draft = () => {
 
-    const shuffledNames = [...players]
-    for (var i = shuffledNames.length -1; i > 0; i--) {
-
-        var j = Math.floor(Math.random() * (i + 1))
-        var temp = shuffledNames[i]
-        shuffledNames[i] = shuffledNames[j]
-        shuffledNames[j] = temp
+    draft = shuffleArray([...data])
+    for (let i = 0; i < data.length ; i++) {
+        draft[i].partner = draft[(i + 1) % data.length].name
 
     }
-    shuffledNames.forEach((name, index) => {
-        if (index == shuffledNames.length - 1) {
-            draft[shuffledNames[index]] = shuffledNames[0]
-        }
-        else {
-            draft[shuffledNames[index]] = shuffledNames[index + 1]
-        }
-    })
 }
 
-app.get('/:name', (req, res) => {
-    const playerName = req.params.name
-    const match = draft[playerName]
+app.get('/:uid', (req, res) => {
+    const playerObj = getPlayerByUid(req.params.uid)
 
-    if (match) {
-        console.log(`${playerName} accessed`)
+    if (playerObj) {
+        console.log(`${playerObj.name} accessed`)
         const htmlContent = `
         <!DOCTYPE html>
         <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Merry Christmas John</title>
+                <title>Merry Christmas ${playerObj.name}</title>
                 <style>
                     body {
                         display: flex;
@@ -49,7 +64,7 @@ app.get('/:name', (req, res) => {
                         height: 100vh;
                         margin: 0;
                         font-family: 'M PLUS Rounded 1c', cursive;
-                        background-color: #f59fce;
+                        background-color: ${playerObj.color};
                     }
                     div {
                         text-align: center;
@@ -71,8 +86,8 @@ app.get('/:name', (req, res) => {
             </head>
             <body>
                 <div>
-                    <h1>Merry Christmas ${playerName}</h1>
-                    <p>Your partner for this year's game is <strong>${match}!</strong></p>
+                    <h1>Merry Christmas ${playerObj.name}</h1>
+                    <p>Your partner for this year's game is <strong>${playerObj.partner}!</strong></p>
                 </div>
             </body>
         </html>
@@ -86,4 +101,11 @@ app.get('/:name', (req, res) => {
 app.listen(port, () => {
     init_draft()
     console.log(`Started Server on ${port}`)
+
+    printedDraft = shuffleArray(draft)
+
+    printedDraft.forEach(playerObj => {
+        console.log(`${playerObj.name} - https://christmasgame.onrender.com/${playerObj.uid}`)
+    })
+    console.log("\nAccess Log:\n")
 })
