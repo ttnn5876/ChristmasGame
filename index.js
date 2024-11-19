@@ -58,7 +58,7 @@ app.get('/:uid', (req, res) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Dynamic Text with Button</title>
+            <title>Merry Christmas</title>
             <style>
                 body {
                     margin: 0;
