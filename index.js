@@ -17,14 +17,14 @@ const shuffleArray = (array) => {
 }
 
 const data = [
-    { name: 'Inay', color: '#FF6B6B', uid: generateRandomUid() },
-    { name: 'Tal', color: '#6BFF6B', uid: generateRandomUid() },
-    { name: 'Litay', color: '#6B6BFF', uid: generateRandomUid() },
-    { name: 'Artur', color: '#6BFFD4', uid: generateRandomUid() },
-    { name: 'Gil', color: '#FF6BCD', uid: generateRandomUid() },
-    { name: 'Bianca', color: '#FFD46B', uid: generateRandomUid() },
-    { name: 'Noe', color: '#6B96FF', uid: generateRandomUid() },
-    { name: 'Dean', color: '#D46BFF', uid: generateRandomUid() }
+    // { name: 'Inay', color: '#FF6B6B', uid: generateRandomUid() }, // :(
+    { name: 'Tal', color: '#de1836', uid: generateRandomUid() },
+    { name: 'Litay', color: '#5f73e3', uid: generateRandomUid() },
+    { name: 'Artur', color: '#a8d156', uid: generateRandomUid() },
+    { name: 'Gil', color: '#4bd2d6', uid: generateRandomUid() },
+    { name: 'Bianca', color: '#dae83c', uid: generateRandomUid() },
+    { name: 'Noe', color: '#f50f44', uid: generateRandomUid() },
+    { name: 'Dean', color: '#f04f32', uid: generateRandomUid() }
 ]; 
 
 const getPlayerByUid = (uid) => {
@@ -52,44 +52,109 @@ app.get('/:uid', (req, res) => {
         const htmlContent = `
         <!DOCTYPE html>
         <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Merry Christmas ${playerObj.name}</title>
-                <style>
-                    body {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        height: 100vh;
-                        margin: 0;
-                        font-family: 'M PLUS Rounded 1c', cursive;
-                        background-color: ${playerObj.color};
-                    }
-                    div {
-                        text-align: center;
-                    }
-                    h1 {
-                        font-size: 3em;
-                    }
-                    p {
-                        font-size: 1.5em;
-                    }
-                    strong {
-                        font-weight: bold;
-                        font-size: 1.8em; 
-                    }
-                </style>
-                <link rel="preconnect" href="https://fonts.googleapis.com">
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&display=swap" rel="stylesheet">
-            </head>
-            <body>
-                <div>
-                    <h1>Merry Christmas ${playerObj.name}</h1>
-                    <p>Your partner for this year's game is <strong>${playerObj.partner}!</strong></p>
-                </div>
-            </body>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Dynamic Text with Button</title>
+            <style>
+                body {
+                    margin: 0;
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    background: linear-gradient(45deg, ${playerObj.color}, #ffffff);
+                    font-family: "DynaPuff", system-ui;
+                    color: #fff;
+                }
+                #text-container {
+                    text-align: center;
+                    font-size: 2rem;
+                    line-height: 1.5;
+                }
+                .line {
+                    opacity: 0;
+                    transform: translateY(20px);
+                    transition: opacity 1s, transform 1s;
+                    text-shadow: 0 0 1px #808080, 0 0 2px #808080, 0 0 3px #808080;
+                }
+                .line.visible {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                #reveal-button {
+                    opacity: 0;
+                    margin-top: 20px;
+                    padding: 10px 20px;
+                    font-size: 1.2rem;
+                    font-family: "DynaPuff", system-ui;
+                    color: #ff9a9e;
+                    background: #fff;
+                    border: none;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                    transition: opacity 1s, transform 0.2s, box-shadow 0.2s;
+                }
+                #reveal-button.visible {
+                    opacity: 1;
+                }
+                #reveal-button:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+                }
+                #extra-line {
+                    margin-top: 20px;
+                    font-size: 3rem;
+                    opacity: 0;
+                    transform: scale(0.8);
+                    transition: opacity 1s, transform 1s;
+                }
+                #extra-line.visible {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            </style>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
+            
+        </head>
+        <body>
+            <div id="text-container">
+                <div class="line">Hi ${playerObj.name} ☺️</div>
+                <div class="line">Christmas is coming up!</div>
+                <div class="line">Who will you spoil this year?</div>
+            </div>
+            <button id="reveal-button">CLICK HERE TO FIND!</button>
+            <div id="extra-line">${playerObj.partner}!</div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const lines = document.querySelectorAll('.line');
+                    const button = document.getElementById('reveal-button');
+                    const extraLine = document.getElementById('extra-line');
+
+                    // Show lines sequentially
+                    lines.forEach((line, index) => {
+                        setTimeout(() => {
+                            line.classList.add('visible');
+                            if (index === lines.length - 1) {
+                                setTimeout(() => {
+                                    button.classList.add('visible');
+                                }, 2000);
+                            }
+                        }, index * 2000);
+                    });
+
+                    // Reveal extra text when button is clicked
+                    button.addEventListener('click', () => {
+                        extraLine.classList.add('visible');
+                    });
+                });
+            </script>
+        </body>
         </html>
         `
         res.send(htmlContent)
@@ -105,7 +170,7 @@ app.listen(port, () => {
     printedDraft = shuffleArray(draft)
 
     printedDraft.forEach(playerObj => {
-        console.log(`${playerObj.name} - https://christmasgame.onrender.com/${playerObj.uid}`)
+        console.log(`${playerObj.name} - http://localhost:3000/${playerObj.uid}`)
     })
     console.log("\nAccess Log:\n")
 })
