@@ -170,7 +170,7 @@ app.listen(port, () => {
     printedDraft = shuffleArray(draft)
 
     printedDraft.forEach(playerObj => {
-        console.log(`${playerObj.name} - http://localhost:3000/${playerObj.uid}`)
+        console.log(`${playerObj.name} - https://christmasgame.onrender.com/${playerObj.uid}`)
     })
     console.log("\nAccess Log:\n")
 })
