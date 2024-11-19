@@ -5,10 +5,12 @@ const generateRandomUid = () => {
     return Math.random().toString(36).substring(2, 8);
 }
 
+SEED = 0.9878128464257857
+
 const shuffleArray = (array) => {
     for (var i = array.length -1; i > 0; i--) {
 
-        var j = Math.floor(Math.random() * (i + 1))
+        var j = Math.floor(SEED * (i + 1))
         var temp = array[i]
         array[i] = array[j]
         array[j] = temp
@@ -42,6 +44,7 @@ const init_draft = () => {
         draft[i].partner = draft[(i + 1) % data.length].name
 
     }
+    console.log(draft)
 }
 
 app.get('/:uid', (req, res) => {
