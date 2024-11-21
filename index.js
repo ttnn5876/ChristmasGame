@@ -5,7 +5,7 @@ const generateRandomUid = () => {
     return Math.random().toString(36).substring(2, 8);
 }
 
-const SEED = 7777
+const SEED = 92929
 
 const random = (seed) => {
     var x = Math.sin(seed++) * 10000
