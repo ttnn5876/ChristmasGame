@@ -5,25 +5,22 @@ const generateRandomUid = () => {
     return Math.random().toString(36).substring(2, 8);
 }
 
-SEED = 12345
+const SEED = 7777
 
-const seededRandom = () => {
-    // Create a simple deterministic PRNG based on the seed
-    let value = SEED % 2147483647;
-    return function () {
-        value = (value * 16807) % 2147483647;
-        return (value - 1) / 2147483646;
-    };
+const random = (seed) => {
+    var x = Math.sin(seed++) * 10000
+    return x - Math.floor(x)
 }
 
-const shuffleArray = (array) => {
-    const seed  = seededRandom()
-    for (var i = array.length -1; i > 0; i--) {
+const shuffleArray = (array, s) => {
+    var m = array.length, t, i
 
-        var j = Math.floor(seed * (i + 1))
-        var temp = array[i]
-        array[i] = array[j]
-        array[j] = temp
+    while(m) {
+        i = Math.floor(random(s) * m--)
+        t = array[m]
+        array[m] = array[i]
+        array[i] = t
+        ++s
     }
     return array
 }
@@ -43,18 +40,27 @@ const getPlayerByUid = (uid) => {
     return data.find(player => player.uid === uid)
 }
 
+const getPlayerByName = (name) => {
+    return data.find(player => player.name === name)
+}
 var draft = []
 const app = express()
 const port = process.env.PORT || 3000;
 
 const init_draft = () => {
+    let c = 1
+    do {
+        draft = shuffleArray([...data], SEED + c)
 
-    draft = shuffleArray([...data])
-    for (let i = 0; i < data.length ; i++) {
-        draft[i].partner = draft[(i + 1) % data.length].name
+        for (let i = 0; i < data.length ; i++) {
+            draft[i].partner = draft[(i + 1) % data.length].name
+        }
+
+        c++
 
     }
-    console.log(draft)
+    while (getPlayerByName("Tal").partner === "Dean" ||  getPlayerByName("Litay").partner === "Tal")
+    
 }
 
 app.get('/:uid', (req, res) => {
@@ -180,7 +186,7 @@ app.listen(port, () => {
     init_draft()
     console.log(`Started Server on ${port}`)
 
-    printedDraft = shuffleArray(draft)
+    printedDraft = shuffleArray(draft, Math.random())
 
     printedDraft.forEach(playerObj => {
         console.log(`${playerObj.name} - https://christmasgame.onrender.com/${playerObj.uid}`)
